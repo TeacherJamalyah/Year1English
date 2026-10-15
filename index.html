@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Year 1 English Learning Games</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --text-color: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-blue);
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--accent-blue);
+            color: #000;
+        }
+
+        .game-section {
+            display: none;
+            width: 100%;
+            max-width: 750px;
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+
+        .game-section.active {
+            display: block;
+        }
+
+        /* Game 1: Word Search Grid Layout */
+        .ws-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 40px);
+            grid-gap: 6px;
+        }
+
+        .cell {
+            width: 40px;
+            height: 40px;
+            background-color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .cell.selected {
+            background-color: #eab308;
+            color: #000;
+        }
+
+        .cell.found {
+            background-color: var(--accent-green);
+            color: #fff;
+        }
+
+        .word-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .word-item {
+            background-color: #334155;
+            padding: 8px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            width: 160px;
+            font-weight: bold;
+        }
+
+        .word-item.found {
+            background-color: var(--accent-green);
+            text-decoration: line-through;
+        }
+
+        /* Common Quiz Controls */
+        .quiz-card {
+            font-size: 22px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #334155;
+            color: var(--text-color);
+            border: 2px solid transparent;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: bold;
+        }
+
+        .option-btn:hover {
+            background-color: var(--accent-blue);
+            color: #000;
+        }
+
+        .score-board {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--accent-blue);
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .input-box {
+            padding: 10px;
+            font-size: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--accent-blue);
+            text-align: center;
+            width: 60px;
+            text-transform: uppercase;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Year 1 English Interactive Games</h1>
+
+    <!-- Tab Navigasi Game -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchGame('game1', event)">1. Word Search</button>
+        <button class="tab-btn" onclick="switchGame('game2', event)">2. Fill in the Blanks</button>
+        <button class="tab-btn" onclick="switchGame('game3', event)">3. Phonics Sounds</button>
+        <button class="tab-btn" onclick="switchGame('game4', event)">4. Quiz Time</button>
+    </div>
+
+    <!-- GAME 1: WORD SEARCH -->
+    <div id="game1" class="game-section active">
+        <h2 style="color: var(--accent-blue);">Word Search: Animals & Colours</h2>
+        <p>Click letters in order to find the hidden words!</p>
+        <div class="ws-container">
+            <div id="ws-grid" class="grid"></div>
+            <div>
+                <h3>Words to Find:</h3>
+                <ul class="word-list" id="word-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME 2: FILL IN THE BLANKS -->
+    <div id="game2" class="game-section">
+        <h2 style="color: var(--accent-blue);">Fill in the Missing Letter</h2>
+        <p>Complete the classroom object word!</p>
+        <div class="score-board" id="score-g2">Score: 0</div>
+        <div class="quiz-card" id="blank-question"></div>
+        <div style="text-align: center; margin-top: 20px;">
+            <input type="text" id="blank-input" class="input-box" maxlength="1">
+            <button class="submit-btn" onclick="checkBlankAnswer()">Submit</button>
+        </div>
+    </div>
+
+    <!-- GAME 3: PHONICS MATCHING -->
+    <div id="game3" class="game-section">
+        <h2 style="color: var(--accent-blue);">Phonics: Beginning Sound</h2>
+        <p>Choose the correct starting sound for the picture/word!</p>
+        <div class="score-board" id="score-g3">Score: 0</div>
+        <div class="quiz-card" id="phonics-question"></div>
+        <div class="options-grid" id="phonics-options"></div>
+    </div>
+
+    <!-- GAME 4: VOCABULARY QUIZ -->
+    <div id="game4" class="game-section">
+        <h2 style="color: var(--accent-blue);">Vocabulary Quiz</h2>
+        <p>Read the question and select the best answer!</p>
+        <div class="score-board" id="score-g4">Score: 0</div>
+        <div class="quiz-card" id="vocab-question"></div>
+        <div class="options-grid" id="vocab-options"></div>
+    </div>
+
+    <script>
+        // Tab Switcher
+        function switchGame(gameId, event) {
+            document.querySelectorAll('.game-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(gameId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        /* ----------------------------------------------------
+           GAME 1: WORD SEARCH
+        ---------------------------------------------------- */
+        const gridData = [
+            ['D','O','G','X','R','E','D','A'],
+            ['C','A','T','Y','B','L','U','E'],
+            ['P','E','N','C','I','L','Z','W'],
+            ['F','R','O','G','K','I','T','E'],
+            ['D','U','C','K','P','I','N','K'],
+            ['B','O','O','K','D','E','S','K'],
+            ['B','A','L','L','P','E','N','S'],
+            ['S','N','A','K','E','F','I','S']
+        ];
+        
+        const wordsToFind = ["DOG", "CAT", "RED", "BLUE", "FROG", "DUCK"];
+        let currentSelection = "";
+        let selectedCells = [];
+
+        function initWordSearch() {
+            const gridEl = document.getElementById('ws-grid');
+            const listEl = document.getElementById('word-list');
+            
+            gridEl.innerHTML = "";
+            listEl.innerHTML = "";
+
+            for(let r=0; r<8; r++) {
+                for(let c=0; c<8; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.innerText = gridData[r][c];
+                    cell.onclick = () => selectCell(cell, gridData[r][c]);
+                    gridEl.appendChild(cell);
+                }
+            }
+
+            wordsToFind.forEach(word => {
+                const li = document.createElement('li');
+                li.className = 'word-item';
+                li.id = 'word-' + word;
+                li.innerHTML = `<span>${word}</span> <span style="font-size: 12px; opacity: 0.8;">Searching</span>`;
+                listEl.appendChild(li);
+            });
+        }
+
+        function selectCell(cell, char) {
+            if(cell.classList.contains('found')) return;
+            
+            cell.classList.toggle('selected');
+            if(cell.classList.contains('selected')) {
+                currentSelection += char;
+                selectedCells.push(cell);
+            }
+
+            if(wordsToFind.includes(currentSelection)) {
+                selectedCells.forEach(c => {
+                    c.classList.remove('selected');
+                    c.classList.add('found');
+                });
+                const item = document.getElementById('word-' + currentSelection);
+                if(item) {
+                    item.classList.add('found');
+                    item.lastElementChild.innerText = 'Found!';
+                }
+                currentSelection = "";
+                selectedCells = [];
+            } else if (currentSelection.length >= 5) {
+                selectedCells.forEach(c => c.classList.remove('selected'));
+                currentSelection = "";
+                selectedCells = [];
+            }
+        }
+
+        /* ----------------------------------------------------
+           GAME 2: FILL IN THE BLANKS
+        ---------------------------------------------------- */
+        const blankQuestions = [
+            { word: "P _ N", missing: "E" },
+            { word: "B _ OK", missing: "O" },
+            { word: "D _ SK", missing: "E" },
+            { word: "R _ LER", missing: "U" },
+            { word: "B _ G", missing: "A" }
+        ];
+        let g2Index = 0;
+        let g2Score = 0;
+
+        function loadG2() {
+            if(g2Index < blankQuestions.length) {
+                document.getElementById('blank-question').innerText = blankQuestions[g2Index].word;
+            } else {
+                document.getElementById('blank-question').innerText = "Well done! Game Completed! 🎉";
+                document.getElementById('blank-input').style.display = "none";
+            }
+        }
+
+        function checkBlankAnswer() {
+            const input = document.getElementById('blank-input').value.toUpperCase();
+            if(!input) return;
+
+            if(input === blankQuestions[g2Index].missing) {
+                g2Score += 10;
+                document.getElementById('score-g2').innerText = `Score: ${g2Score}`;
+                alert("Correct! Excellent!");
+            } else {
+                alert(`Oops! The correct letter was '${blankQuestions[g2Index].missing}'`);
+            }
+            document.getElementById('blank-input').value = "";
+            g2Index++;
+            loadG2();
+        }
+
+        /* ----------------------------------------------------
+           GAME 3: PHONICS MATCHING
+        ---------------------------------------------------- */
+        const phonicsQuestions = [
+            { item: "🍎 Apple", sound: "a", options: ["a", "b", "c", "s"] },
+            { item: "🛏️ Bed", sound: "b", options: ["p", "b", "d", "t"] },
+            { item: "🐱 Cat", sound: "c", options: ["k", "s", "c", "g"] },
+            { item: "☀️ Sun", sound: "s", options: ["s", "z", "f", "h"] },
+            { item: "🦆 Duck", sound: "d", options: ["b", "p", "d", "t"] }
+        ];
+        let g3Index = 0, g3Score = 0;
+
+        function loadG3() {
+            if(g3Index < phonicsQuestions.length) {
+                const q = phonicsQuestions[g3Index];
+                document.getElementById('phonics-question').innerText = `What is the beginning sound of ${q.item}?`;
+                const opts = document.getElementById('phonics-options');
+                opts.innerHTML = "";
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => {
+                        if(opt === q.sound) {
+                            g3Score += 10;
+                            alert("Correct sound!");
+                        } else {
+                            alert(`Not quite! The correct sound is /${q.sound}/`);
+                        }
+                        document.getElementById('score-g3').innerText = `Score: ${g3Score}`;
+                        g3Index++;
+                        loadG3();
+                    };
+                    opts.appendChild(btn);
+                });
+            } else {
+                document.getElementById('phonics-question').innerText = "Awesome! Phonics Game Completed! 🎉";
+                document.getElementById('phonics-options').innerHTML = "";
+            }
+        }
+
+        /* ----------------------------------------------------
+           GAME 4: VOCABULARY QUIZ
+        ---------------------------------------------------- */
+        const vocabQuestions = [
+            { q: "Which one is a COLOUR?", ans: "Yellow", options: ["Dog", "Yellow", "Chair", "Pencil"] },
+            { q: "Which one is a NUMBER?", ans: "Seven", options: ["Cat", "Ruler", "Seven", "Red"] },
+            { q: "What do you use to write?", ans: "Pencil", options: ["Pencil", "Desk", "Bag", "Rubber"] },
+            { q: "Which one is an ANIMAL?", ans: "Tiger", options: ["Green", "Book", "Tiger", "Pen"] }
+        ];
+        let g4Index = 0, g4Score = 0;
+
+        function loadG4() {
+            if(g4Index < vocabQuestions.length) {
+                const q = vocabQuestions[g4Index];
+                document.getElementById('vocab-question').innerText = q.q;
+                const opts = document.getElementById('vocab-options');
+                opts.innerHTML = "";
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => {
+                        if(opt === q.ans) {
+                            g4Score += 10;
+                            alert("Great job! Correct!");
+                        } else {
+                            alert(`Wrong! The correct answer was ${q.ans}`);
+                        }
+                        document.getElementById('score-g4').innerText = `Score: ${g4Score}`;
+                        g4Index++;
+                        loadG4();
+                    };
+                    opts.appendChild(btn);
+                });
+            } else {
+                document.getElementById('vocab-question').innerText = "Great job! Quiz Completed! 🎉";
+                document.getElementById('vocab-options').innerHTML = "";
+            }
+        }
+
+        // Initialize All Games
+        window.onload = () => {
+            initWordSearch();
+            loadG2();
+            loadG3();
+            loadG4();
+        };
+    </script>
+</body>
+</html>
